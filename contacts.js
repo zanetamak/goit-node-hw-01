@@ -9,17 +9,25 @@ const fetchContacts = async () => {
 };
 
 const listContacts = async () => {
-  const contacts = await fetchContacts();
- console.table(contacts);
-  return; 
+  try 
+ { const contacts = await fetchContacts();
+    console.table(contacts);
+    return contacts
+  } catch (error) {
+    throw error;
+  }
 };
 
 
 const getContactById = async (contactId) => {
-    const contacts = await fetchContacts();
+  try
+  { const contacts = await fetchContacts();
     const contact = contacts.find((contact) => contact.id === contactId);
     console.log(contact);
-    return;
+    return contact;
+    } catch (error) {
+    throw error;
+  }
     
 }
 
@@ -27,23 +35,24 @@ const removeContact = async (contactId) => {
     try {
     const contacts = await fetchContacts();
     const contactsUpdated = contacts.filter(contact => contact.id !== contactId)
-    await fs.writeFile(contactsPath, JSON.stringify(contactsUpdated));
+    await fs.writeFile(contactsPath, JSON.stringify(contactsUpdated), null, 2);
     console.log(`Contact with id ${contactId} has been removed`);
  } catch (error) {
-        console.error(error);
+        throw error;
  }
 }
 
 const addContact = async (name, email, phone) => {
   try {
     const contacts = await fetchContacts();
-    const id = contacts.length ? Math.max(...contacts.map(contact => parseInt(contact.id))) + 1 : 1;
+    const contactIds = contacts.map(contact => parseInt(contact.id)).filter(id => !isNaN(id));
+    const id = contactIds.length ? Math.max(...contactIds) + 1 : 1;
     const newContact = { id, name, email, phone };
     const updatedContacts = [...contacts, newContact];
-    await fs.writeFile(contactsPath, JSON.stringify(updatedContacts));
-    console.log(`Contact "${name}" with id ${id} has been added.`);
+    await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
+    console.log(`Kontakt "${name}" o identyfikatorze ${id} został dodany.`);
   } catch (error) {
-    console.error(error);
+    throw error;
   }
 }
 
