@@ -9,38 +9,36 @@ const fetchContacts = async () => {
 };
 
 const listContacts = async () => {
-  try 
- { const contacts = await fetchContacts();
+  try {
+    const contacts = await fetchContacts();
     console.table(contacts);
-    return contacts
+    return contacts;
   } catch (error) {
     throw error;
   }
 };
 
-
 const getContactById = async (contactId) => {
-  try
-  { const contacts = await fetchContacts();
+  try {
+    const contacts = await fetchContacts();
     const contact = contacts.find((contact) => contact.id === contactId);
     console.log(contact);
     return contact;
-    } catch (error) {
+  } catch (error) {
     throw error;
-  }
-    
-}
+  } 
+};
 
 const removeContact = async (contactId) => {
-    try {
+  try {
     const contacts = await fetchContacts();
-    const contactsUpdated = contacts.filter(contact => contact.id !== contactId)
-    await fs.writeFile(contactsPath, JSON.stringify(contactsUpdated), null, 2);
+    const contactsUpdated = contacts.filter(contact => contact.id !== contactId);
+    await fs.writeFile(contactsPath, JSON.stringify(contactsUpdated, null, 2));
     console.log(`Contact with id ${contactId} has been removed`);
- } catch (error) {
-        throw error;
- }
-}
+  } catch (error) {
+    throw error;
+  }
+};
 
 const addContact = async (name, email, phone) => {
   try {
@@ -50,15 +48,15 @@ const addContact = async (name, email, phone) => {
     const newContact = { id, name, email, phone };
     const updatedContacts = [...contacts, newContact];
     await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
-    console.log(`Kontakt "${name}" o identyfikatorze ${id} został dodany.`);
+    console.log(`Contact "${name}" with id ${id} has been added.`);
   } catch (error) {
     throw error;
   }
-}
+};
 
 module.exports = {
-        listContacts,
-        getContactById,
-        removeContact,
-        addContact
-}
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact
+};
